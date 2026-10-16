@@ -57,7 +57,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/products/list").permitAll()
                         .requestMatchers("/api/products/**").hasRole("ADMIN")
                         .requestMatchers("/api/order/create").hasAnyRole("ADMIN", "CUSTOMER")
-                        .requestMatchers("/api/order/list").hasAnyRole("ADMIN")
+                        .requestMatchers("/api/order/list").hasAnyRole("ADMIN", "CUSTOMER")
+                        .requestMatchers("/api/order/*").hasAnyRole("ADMIN", "CUSTOMER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/order/*/cancel").hasAnyRole("ADMIN", "CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));

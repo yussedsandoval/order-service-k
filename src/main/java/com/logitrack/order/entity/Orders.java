@@ -35,6 +35,9 @@ public class Orders {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @Column(nullable = false)
+    private String deliveryAddress;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
@@ -43,9 +46,10 @@ public class Orders {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    public Orders(UUID userId) {
+    public Orders(UUID userId, String deliveryAddress) {
         this.userId = userId;
         this.status = OrderStatus.CREATED;
+        this.deliveryAddress = deliveryAddress;
     }
 
     public void addItem(Product product, Long quantity) {
@@ -53,6 +57,13 @@ public class Orders {
                 this, product, quantity, product.getPrice()
         );
         items.add(orderItem);
+    }
+
+    public void cancelOrder() {
+        this.items.forEach(item -> {
+            item.getProduct().increaseStock(item.getQuantity());
+        });
+        this.status = OrderStatus.CANCELED;
     }
 
     @Override

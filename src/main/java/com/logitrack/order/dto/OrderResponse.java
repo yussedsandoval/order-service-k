@@ -9,12 +9,14 @@ import java.util.UUID;
 
 public record OrderResponse(
         UUID id,
+        String deliveryAddress,
         List<OrderItemResponse> products,
         OrderStatus status) {
 
     public static OrderResponse from(Orders order) {
         return new OrderResponse(
                 order.getId(),
+                order.getDeliveryAddress(),
                 OrderItemResponse.fromAll(order.getItems()),
                 order.getStatus()
         );

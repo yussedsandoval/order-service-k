@@ -51,6 +51,10 @@ public class Product {
         this.stock -= quantity;
     }
 
+    public void increaseStock(Long quantity) {
+        this.stock += quantity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
