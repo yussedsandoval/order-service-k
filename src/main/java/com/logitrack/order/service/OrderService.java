@@ -1,5 +1,6 @@
 package com.logitrack.order.service;
 
+import com.logitrack.order.component.OrderEventPublisher;
 import com.logitrack.order.dto.OrderCreateRequest;
 import com.logitrack.order.dto.OrderItemRequest;
 import com.logitrack.order.dto.OrderResponse;
@@ -26,10 +27,13 @@ public class OrderService {
 
     private final IOrdersRepository ordersRepository;
     private final IProductRepository productRepository;
+    private final OrderEventPublisher orderEventPublisher;
 
-    public OrderService(IOrdersRepository ordersRepository,  IProductRepository productRepository) {
+    public OrderService(IOrdersRepository ordersRepository,  IProductRepository productRepository,
+                        OrderEventPublisher orderEventPublisher) {
         this.ordersRepository = ordersRepository;
         this.productRepository = productRepository;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     @Transactional
@@ -47,6 +51,7 @@ public class OrderService {
         });
 
         Orders response = ordersRepository.save(order);
+        orderEventPublisher.publishOrderCreated(response);
         return OrderResponse.from(response);
     }
 
@@ -85,6 +90,7 @@ public class OrderService {
         }
         order.cancelOrder();
         Orders response = ordersRepository.save(order);
+        orderEventPublisher.publishOrderCanceled(orderId, order.getUserId(), userId);
         return OrderResponse.from(response);
     }
 }
