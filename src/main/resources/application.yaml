@@ -1,0 +1,22 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/order_db}
+    username: ${DB_USERNAME:logitrack}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+jwt:
+  secret: ${JWT_SECRET}
+
+logging:
+  level:
+    org.hibernate.SQL: debug
